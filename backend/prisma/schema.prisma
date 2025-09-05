@@ -1,10 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 // backend/prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,6 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- UPDATED USER MODEL ---
 model User {
   id            String    @id @default(uuid())
   firstName     String    @map("first_name")
@@ -21,14 +17,76 @@ model User {
   email         String    @unique
   passwordHash  String    @map("password_hash")
   riskAppetite  RiskAppetite @default(moderate) @map("risk_appetite")
+  role          UserRole  @default(USER) // <-- ADD THIS LINE
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
+  // Relation to Investments
+  investments   Investment[] // <-- ADD THIS RELATION
+
   @@map("users")
+}
+
+// --- NEW INVESTMENT PRODUCT MODEL ---
+model InvestmentProduct {
+  id             String    @id @default(uuid())
+  name           String
+  investmentType InvestmentType @map("investment_type")
+  tenureMonths   Int       @map("tenure_months")
+  annualYield    Decimal   @db.Decimal(5, 2) @map("annual_yield")
+  riskLevel      RiskAppetite @map("risk_level")
+  minInvestment  Decimal   @default(1000.00) @db.Decimal(12, 2) @map("min_investment")
+  maxInvestment  Decimal?  @db.Decimal(12, 2) @map("max_investment")
+  description    String?   @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  // Relation to Investments
+  investments    Investment[] // <-- ADD THIS RELATION
+
+  @@map("investment_products")
+}
+
+// --- NEW INVESTMENT MODEL ---
+model Investment {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  productId       String    @map("product_id")
+  amount          Decimal   @db.Decimal(12, 2)
+  investedAt      DateTime  @default(now()) @map("invested_at")
+  status          InvestmentStatus @default(active)
+  expectedReturn  Decimal?  @db.Decimal(12, 2) @map("expected_return")
+  maturityDate    DateTime? @db.Date @map("maturity_date")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         InvestmentProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("investments")
+}
+
+// --- ENUMS ---
+enum UserRole {
+  USER
+  ADMIN
 }
 
 enum RiskAppetite {
   low
   moderate
   high
+}
+
+enum InvestmentType {
+  bond
+  fd
+  mf
+  etf
+  other
+}
+
+enum InvestmentStatus {
+  active
+  matured
+  cancelled
 }

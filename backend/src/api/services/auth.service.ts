@@ -6,17 +6,24 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 export const signupUser = async (userData: any) => {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const user = await prisma.user.create({
-        data: {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            passwordHash: hashedPassword,
-            riskAppetite: userData.riskAppetite || 'moderate'
-        }
-    });
-    return user;
+  // Check for existing user
+  const existingUser = await prisma.user.findUnique({ where: { email: userData.email } });
+  if (existingUser) {
+    throw new Error('Email already in use');
+  }
+
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
+  const user = await prisma.user.create({
+    data: {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      passwordHash: hashedPassword,
+      riskAppetite: userData.riskAppetite || 'moderate',
+      role: userData.role || 'USER', // default role
+    },
+  });
+  return user;
 };
 
 export const loginUser = async (credentials: any) => {
