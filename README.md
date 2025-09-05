@@ -48,5 +48,3 @@ This project is a monorepo managed with `pnpm` workspaces.
 The backend server will be available at `http://localhost:3001`.
 
 ---
-
-We will add the testing part in a subsequent step to keep this focused. For now, you have a solid foundation.
