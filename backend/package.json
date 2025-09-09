@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "prisma": {
-  "seed": "ts-node prisma/seed.ts"
+    "schema": "./prisma/schema.prisma",
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
@@ -16,12 +17,14 @@
   "license": "ISC",
   "packageManager": "pnpm@10.15.1",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.15.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.15.0",
     "zod": "^4.1.5"
   },
   "devDependencies": {
@@ -31,7 +34,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.1",
     "nodemon": "^3.1.10",
-    "prisma": "^6.15.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"

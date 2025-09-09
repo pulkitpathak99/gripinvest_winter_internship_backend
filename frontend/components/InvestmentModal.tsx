@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import axios from "axios";
 import api from "@/lib/api";
 
 interface Product {
@@ -41,8 +42,13 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
         amount: investmentAmount,
       });
       onSuccess(); // only call parent success
-    } catch (err: any) {
-      setError(err.response?.data?.message || "An error occurred.");
+    } catch (error: unknown) {
+      console.error('Investment error:', error);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "An error occurred.");
+      } else {
+        setError("An error occurred.");
+      }
     } finally {
       setLoading(false);
     }

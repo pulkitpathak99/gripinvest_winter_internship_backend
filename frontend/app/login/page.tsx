@@ -24,7 +24,8 @@ export default function LoginPage() {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       router.push('/dashboard'); // Redirect to dashboard after login
-    } catch (err) {
+    } catch (error) {
+      console.error('Login error:', error);
       setError('Invalid credentials. Please try again.');
     }
   };

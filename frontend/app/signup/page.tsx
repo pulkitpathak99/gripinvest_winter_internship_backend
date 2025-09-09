@@ -1,16 +1,21 @@
+//frontend/app/signup/page.tsx
+
 "use client";
 
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+type RiskAppetite = 'low' | 'moderate' | 'high';
+type UserRole = 'USER' | 'ADMIN';
+
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [riskAppetite, setRiskAppetite] = useState<'low' | 'moderate' | 'high'>('moderate');
-  const [role, setRole] = useState<'USER' | 'ADMIN'>('USER'); // default to USER
+  const [riskAppetite, setRiskAppetite] = useState<RiskAppetite>('moderate');
+  const [role, setRole] = useState<UserRole>('USER'); // default to USER
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -33,9 +38,22 @@ export default function SignupPage() {
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
       router.push('/dashboard'); // redirect after signup
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+    } catch (error: unknown) {
+      console.error('Signup error:', error);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || 'Signup failed. Please try again.');
+      } else {
+        setError('Signup failed. Please try again.');
+      }
     }
+  };
+
+  const handleRiskAppetiteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRiskAppetite(e.target.value as RiskAppetite);
+  };
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRole(e.target.value as UserRole);
   };
 
   return (
@@ -97,7 +115,7 @@ export default function SignupPage() {
           <select
             id="riskAppetite"
             value={riskAppetite}
-            onChange={(e) => setRiskAppetite(e.target.value as any)}
+            onChange={handleRiskAppetiteChange}
             className="w-full px-3 py-2 border rounded"
           >
             <option value="low">Low</option>
@@ -111,7 +129,7 @@ export default function SignupPage() {
           <select
             id="role"
             value={role}
-            onChange={(e) => setRole(e.target.value as any)}
+            onChange={handleRoleChange}
             className="w-full px-3 py-2 border rounded"
           >
             <option value="USER">User</option>

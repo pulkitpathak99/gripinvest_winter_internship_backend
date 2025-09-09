@@ -2,7 +2,6 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
-import { toast } from "react-toastify"; 
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
-    "rootDir": ".",
+    "rootDir": "src", // <-- CORRECTED
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -17,6 +17,5 @@
       "middlewares/*": ["middlewares/*"]
     }
   },
-  "include": ["src","prisma"],
+  "include": ["src"]
 }
-
