@@ -137,3 +137,60 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# ## General ##################################################################
+
+# Dependencies
+# Slashes at the end ensure only directories are ignored
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log
+yarn-debug.log*
+
+# Environment variables
+# Ignore all .env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# But DO commit the example file
+!/.env.example
+
+# ## IDE & Editor Config #####################################################
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ## OS Generated Files #####################################################
+.DS_Store
+Thumbs.db
+
+# ## Test Artifacts ###########################################################
+coverage/
+.nyc_output/
+
+# ## Docker ##################################################################
+# Ignore local Docker data volumes if you were to map them differently
+db_data/
+mysql-data/
+
+# ## Specific to Frontend (Next.js) ########################################
+# Next.js build cache
+frontend/.next/
+
+# ## Specific to Backend (Prisma) #########################################
+# Prisma's local SQLite database file (if you were using one)
+# backend/prisma/*.db
+# backend/prisma/*.db-journal
