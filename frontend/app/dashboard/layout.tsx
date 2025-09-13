@@ -12,6 +12,7 @@ import Chatbot from '@/components/chatbot/Chatbot'; // <-- ADD
 import ChatbotTrigger from '@/components/chatbot/ChatbotTrigger'; // <-- ADD
 import Link from 'next/link';
 import Image from 'next/image';
+import { AnimatePresence } from 'framer-motion';
 
 import clsx from 'clsx'; // Using clsx for cleaner conditional classes
 
@@ -121,7 +122,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                    </div>
                    <div className="flex items-center gap-4">
                         <ChatbotTrigger />
-                        <Bell size={20} className="cursor-pointer hover:text-white" />
                         <Link href="/dashboard/profile">
                             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white cursor-pointer">
                                 {user?.firstName?.charAt(0).toUpperCase()}
@@ -135,7 +135,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                     {children}
                 </main>
             </div>
-            <Chatbot />
+            <AnimatePresence>
+        <Chatbot />
+      </AnimatePresence>
         </div>
     );
 }
