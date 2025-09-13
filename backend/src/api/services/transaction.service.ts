@@ -1,30 +1,24 @@
 // backend/src/api/services/transaction.service.ts
+
 import { PrismaClient } from '@prisma/client';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateContentWithFallback } from '../utils/aiHelper';
 
 const prisma = new PrismaClient();
 
-// Lazy / guarded AI init so missing key or library errors won't crash module import
-let aiModel: any | null = null;
-try {
-  if (process.env.GEMINI_API_KEY) {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    aiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-  } else {
-    console.warn("GEMINI_API_KEY not provided — AI summaries will be disabled.");
-  }
-} catch (e) {
-  aiModel = null;
-  console.error("Failed to initialize Gemini AI client. AI summaries disabled.", e);
+// NEW: Define the type for our summary object
+interface AiSummary {
+  text: string;
+  status: 'success' | 'warning';
 }
 
-async function summarizeErrorsWithAI(errorLogs: any[]): Promise<string> {
-  if (!aiModel) {
-    return "AI summary not available (AI client not initialized).";
-  }
-
+// CHANGED: This function now returns a Promise of our AiSummary object
+async function summarizeErrorsWithAI(errorLogs: any[]): Promise<AiSummary> {
   if (!errorLogs || errorLogs.length === 0) {
-    return "No errors detected in the last 24 hours. The system is operating smoothly.";
+    // CHANGED: Return the object format
+    return {
+      text: "No errors detected in the last 24 hours. The system is operating smoothly.",
+      status: 'success',
+    };
   }
 
   const logSummary = errorLogs
@@ -35,27 +29,25 @@ async function summarizeErrorsWithAI(errorLogs: any[]): Promise<string> {
     Analyze the following API error logs from an investment platform within the last 24 hours.
     Logs:
     ${logSummary}
-
-    Provide a brief, human-readable summary (1-2 sentences) of the most important or frequent issues. Identify any critical patterns.
+    Provide a brief, human-readable summary (1-2 sentences) of the most important or frequent issues.
   `;
-
+  
   try {
-    // keep original call but guard against library differences
-    const result = await aiModel.generateContent(prompt);
-    // result.response may be a promise or property depending on SDK; handle safely
-    if (result?.response) {
-      const response = await result.response;
-      return String(response?.text?.()).trim() || String(response?.text || "").trim() || "AI responded with empty summary.";
-    }
-    // fallback if API returns plain text
-    return String(result?.text || result?.output || "").trim() || "AI returned no usable summary.";
+    const summaryText = await generateContentWithFallback(prompt);
+    // CHANGED: Return the object format
+    return {
+      text: summaryText,
+      status: 'warning', // If there are errors, the status is 'warning'
+    };
   } catch (error) {
-    console.error("Error invoking Gemini AI for transaction summaries:", error);
-    return "Could not generate AI summary. The model is experience several traffic. Please wait and try again later.";
+    console.error("AI summary generation failed after fallback:", error);
+    // CHANGED: Return the object format
+    return {
+      text: "Could not generate AI summary due to an issue with the AI service.",
+      status: 'warning',
+    };
   }
 }
-
-// backend/src/api/services/transaction.service.ts
 
 export const getTransactionLogs = async (userId: string) => {
   try {
@@ -63,7 +55,6 @@ export const getTransactionLogs = async (userId: string) => {
       where: { userId: userId },
       orderBy: { createdAt: 'desc' },
       take: 200,
-      // CORRECTED: Select specific fields, including the user's email via the relation
       select: {
         id: true,
         statusCode: true,
@@ -71,25 +62,21 @@ export const getTransactionLogs = async (userId: string) => {
         endpoint: true,
         createdAt: true,
         errorMessage: true,
-        user: {
-          select: {
-            email: true,
-          },
-        },
+        user: { select: { email: true } },
       },
     });
 
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentErrorLogs = logs.filter(
-      (log) =>
-        log.statusCode >= 400 && new Date(log.createdAt) > twentyFourHoursAgo
+      (log) => log.statusCode >= 400 && new Date(log.createdAt) > twentyFourHoursAgo
     );
 
+    // This variable now correctly holds the AiSummary object
     const aiErrorSummary = await summarizeErrorsWithAI(recentErrorLogs);
 
     return {
       logs,
-      aiErrorSummary,
+      aiErrorSummary, // This is now an object, which matches the frontend's expectation
     };
   } catch (err) {
     console.error("Error in getTransactionLogs:", err);

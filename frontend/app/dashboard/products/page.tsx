@@ -73,8 +73,8 @@ export default function ProductsPage() {
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const typeMatch = filters.type === 'All' || product.investmentType.toLowerCase() === filters.type.toLowerCase();
-      const riskMatch = filters.risk === 'All' || product.riskLevel === filters.risk; // <-- CORRECTED
-      return typeMatch && riskMatch;
+      const riskMatch = filters.risk === 'All' || product.riskLevel === filters.risk; 
+      return typeMatch && riskMatch ;
     });
   }, [products, filters]);
 

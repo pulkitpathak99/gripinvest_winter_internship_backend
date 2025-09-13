@@ -1,11 +1,49 @@
 // backend/src/api/services/profile.service.ts
 import { PrismaClient, RiskAppetite } from '@prisma/client';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import bcrypt from 'bcryptjs';
+import { generateContentWithFallback } from '../utils/aiHelper'; // <-- Import our new helper
 
 const prisma = new PrismaClient();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+/**
+ * Generates AI-powered product recommendations based on risk appetite.
+ */
+export const getAiProfileRecommendations = async (riskAppetite: RiskAppetite) => {
+  const products = await prisma.investmentProduct.findMany({
+    where: {
+      riskLevel: { in: riskAppetite === 'high' ? ['high', 'moderate'] : (riskAppetite === 'moderate' ? ['moderate', 'low'] : ['low']) }
+    },
+    orderBy: { annualYield: 'desc' },
+    take: 5,
+  });
+
+  if (products.length === 0) {
+    return {
+      summary: "No specific products match your profile right now, but check out our general listings!",
+      products: [],
+    };
+  }
+
+  const productSummary = products.map(p => `- ${p.name} (Yield: ${p.annualYield}%, Type: ${p.investmentType}, Risk: ${p.riskLevel})`).join('\n');
+  const prompt = `
+    A user has a "${riskAppetite}" risk appetite. Based on these products:\n${productSummary}\n
+    Format the output as a JSON object with two keys: "summary" (a short, encouraging 1-sentence string) and "products" (an array of the top 2-3 product names as strings).
+  `;
+
+  try {
+    const rawResponse = await generateContentWithFallback(prompt);
+    // Clean and parse the response safely
+    const cleanedText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Error with AI in profile service (after fallback):", error);
+    // Fallback if AI or JSON parsing fails
+    return {
+        summary: `Here are some top products matching your ${riskAppetite} profile.`,
+        products: products.slice(0, 3).map(p => p.name)
+    };
+  }
+};
 
 
 /**
@@ -70,48 +108,3 @@ export const changeUserPassword = async (userId: string, oldPass: string, newPas
   });
 };
 
-/**
- * Generates AI-powered product recommendations based on risk appetite.
- */
-export const getAiProfileRecommendations = async (riskAppetite: RiskAppetite) => {
-  // Find products that match the user's risk level
-  const products = await prisma.investmentProduct.findMany({
-    where: {
-      riskLevel: { in: riskAppetite === 'high' ? ['high', 'moderate'] : (riskAppetite === 'moderate' ? ['moderate', 'low'] : ['low']) }
-    },
-    orderBy: { annualYield: 'desc' },
-    take: 5,
-  });
-
-  if (products.length === 0) {
-    return {
-      summary: "No specific products match your profile right now, but check out our general listings!",
-      products: [],
-    };
-  }
-
-  const productSummary = products.map(p => `- ${p.name} (Yield: ${p.annualYield}%, Type: ${p.investmentType}, Risk: ${p.riskLevel})`).join('\n');
-
-  const prompt = `
-    A user has a "${riskAppetite}" risk appetite. Based on the following available products, provide a short, encouraging summary (1 sentence) and then list the top 2-3 most suitable products for them.
-    Available Products:
-    ${productSummary}
-
-    Format the output as a JSON object with two keys: "summary" (string) and "products" (an array of product names as strings). Example: {"summary": "...", "products": ["Product A", "Product B"]}
-  `;
-
-  try {
-    const result = await model.generateContent(prompt);
-    const text = (await result.response).text();
-    const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(cleanedText);
-  } catch (error) {
-    console.error("Error with Gemini API in profile service:", error);
-    // Fallback if AI fails
-    return {
-        summary: `Here are some top products matching your ${riskAppetite} profile.`,
-        products: products.slice(0, 3).map(p => p.name)
-    };
-  }
-};
- 
