@@ -9,6 +9,7 @@ import PerformanceChart from '@/components/portfolio/PerformanceChart';
 import InvestmentsTable from '@/components/portfolio/InvestmentsTable';
 import AssetAllocationChart from '@/components/portfolio/AssetAllocationChart';
 import { TrendingUp, Landmark, Wallet, PlusCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/formatters';
 
 // Define a stricter type for our data
 interface PerformanceDataPoint { date: string; value: number; contributions: number; earnings: number; }
@@ -62,10 +63,10 @@ export default function PortfolioPage() {
     <div className="space-y-6">
       {/* Section 1: Dynamic KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KpiCard title="Beginning Balance" value={`$${beginningBalance.toLocaleString()}`} icon={Wallet} />
-        <KpiCard title="Net Contributions" value={`$${netContributions.toLocaleString()}`} icon={PlusCircle} />
-        <KpiCard title="Earnings" value={`$${earnings.toLocaleString()}`} icon={TrendingUp} changeColor={earningsColor} />
-        <KpiCard title="Ending Balance" value={`$${endingBalance.toLocaleString()}`} icon={Landmark} />
+        <KpiCard title="Beginning Balance" value={`${formatCurrency(beginningBalance)}`} icon={Wallet} />
+        <KpiCard title="Net Contributions" value={`${formatCurrency(netContributions)}`} icon={PlusCircle} />
+        <KpiCard title="Earnings" value={`${formatCurrency(earnings)}`} icon={TrendingUp} changeColor={earningsColor} />
+        <KpiCard title="Ending Balance" value={`${formatCurrency(endingBalance)}`} icon={Landmark} />
       </div>
 
       {/* Section 2: Interactive Performance Chart */}

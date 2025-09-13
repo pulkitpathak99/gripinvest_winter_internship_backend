@@ -14,6 +14,8 @@ router.get('/', authMiddleware, productController.getAllProducts.bind(productCon
 // GET /api/products/:id - Single product
 router.get('/:id', authMiddleware, productController.getProductById.bind(productController));
 
+router.get('/:id/analysis', authMiddleware, productController.getProductAnalysis.bind(productController));
+
 // POST /api/products - Admin only
 router.post(
   '/',

@@ -147,7 +147,7 @@ export default function ProductFormModal({ initialData, onClose, onSuccess }: Pr
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400">Minimum Investment ($)</label>
+            <label className="block text-sm font-medium text-gray-400">Minimum Investment (INR)</label>
             <input type="number" name="minInvestment" value={formData.minInvestment} onChange={handleChange} required step="100" className="mt-1 w-full p-2 bg-slate-800 border border-slate-700 rounded-lg"/>
           </div>
           <div>

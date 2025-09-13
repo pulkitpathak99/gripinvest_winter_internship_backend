@@ -1,19 +1,11 @@
 // frontend/components/ProductCard.tsx
 import { ShieldCheck, Calendar, DollarSign } from 'lucide-react';
-
-interface Product {
-  id: string;
-  name: string;
-  investmentType: string;
-  annualYield: number;
-  riskLevel: 'low' | 'moderate' | 'high';
-  tenureMonths: number;
-  minInvestment: number;
-}
+import { Product } from '@/types';
+import { formatCurrency } from '@/lib/formatters';
 
 interface ProductCardProps {
   product: Product;
-  onInvestClick: () => void;
+  onInvestClick: (event: React.MouseEvent) => void;
 }
 
 const riskStyles = {
@@ -38,7 +30,7 @@ export default function ProductCard({ product, onInvestClick }: ProductCardProps
         {/* Annual Yield */}
         <div className="my-6">
           <p className="text-5xl font-bold text-white">{product.annualYield}%</p>
-          <p className="text-gray-400">Annual Yield (p.a.)</p>
+          <p className="text-gray-400">Annual Yield (Per Annum)</p>
         </div>
 
         {/* Key Metrics */}
@@ -49,7 +41,7 @@ export default function ProductCard({ product, onInvestClick }: ProductCardProps
           </div>
           <div className="flex justify-between items-center text-gray-300">
             <span className="flex items-center gap-2 text-gray-400"><DollarSign size={16} /> Min. Investment</span>
-            <span className="font-medium text-white">${Number(product.minInvestment).toLocaleString()}</span>
+            <span className="font-medium text-white">{formatCurrency(Number(product.minInvestment))}</span>
           </div>
         </div>
       </div>

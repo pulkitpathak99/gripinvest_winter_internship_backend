@@ -1,5 +1,6 @@
 // frontend/components/dashboard/RecentActivityCard.tsx
 import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/formatters';
 
 interface Activity {
     id: string;
@@ -41,7 +42,7 @@ export default function RecentActivityCard({ activities }: RecentActivityCardPro
                                 <tr key={activity.id} className="border-b border-slate-800 hover:bg-slate-800/50">
                                     <td className="p-3 text-white font-medium">{activity.product}</td>
                                     <td className="p-3">{activity.type}</td>
-                                    <td className="p-3">${activity.amount.toLocaleString()}</td>
+                                    <td className="p-3">{formatCurrency(activity.amount)}</td>
                                     <td className={`p-3 flex items-center gap-2 ${statusColor}`}>
                                         <StatusIcon size={16} />
                                         <span>{statusStyles[activity.status].label}</span>

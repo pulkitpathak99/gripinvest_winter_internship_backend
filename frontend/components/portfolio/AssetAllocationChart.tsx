@@ -1,8 +1,8 @@
 // frontend/components/portfolio/AssetAllocationChart.tsx
 "use client";
 
+import { formatCurrency } from '@/lib/formatters';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
 // Define the shape of the data prop
 interface ChartData {
   name: string;
@@ -45,7 +45,7 @@ export default function AssetAllocationChart({ data }: AssetAllocationChartProps
 
           {/* Tooltip that appears on hover, formatted as a dollar amount */}
           <Tooltip 
-            formatter={(value: number) => `$${value.toLocaleString()}`}
+            formatter={(value: number) => `${formatCurrency(value)}`}
             contentStyle={{ 
                 backgroundColor: '#1e293b', 
                 border: '1px solid #334155', 

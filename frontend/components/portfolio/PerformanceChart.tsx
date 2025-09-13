@@ -3,6 +3,7 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import clsx from 'clsx';
 import { Dispatch, SetStateAction } from 'react'; // Import React types
+import { formatCurrency } from '@/lib/formatters';
 
 // Define the shape of the data it will receive
 interface PerformanceData {
@@ -27,9 +28,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-slate-800 border border-slate-700 p-3 rounded-lg shadow-lg text-sm">
         <p className="label text-gray-400">{`${label}`}</p>
-        {payload[0] && <p className="intro text-blue-400 font-semibold">{`Portfolio Value : $${payload[0].value.toLocaleString()}`}</p>}
-        {payload[1] && <p className="intro text-teal-400">{`Net Contributions : $${payload[1].value.toLocaleString()}`}</p>}
-        {dataPoint.earnings !== undefined && <p className="intro text-gray-300">{`Earnings : $${dataPoint.earnings.toLocaleString()}`}</p>}
+        {payload[0] && <p className="intro text-blue-400 font-semibold">{`Portfolio Value : ${formatCurrency(payload[0].value)}`}</p>}
+        {payload[1] && <p className="intro text-teal-400">{`Net Contributions : ${formatCurrency(payload[1].value)}`}</p>}
+        {dataPoint.earnings !== undefined && <p className="intro text-gray-300">{`Earnings : ${formatCurrency(dataPoint.earnings)}`}</p>}
       </div>
     );
   }
@@ -72,7 +73,7 @@ export default function PerformanceChart({ data, timeframe, setTimeframe }: Perf
               </linearGradient>
             </defs>
             <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${(value/1000)}k`} />
+            <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${(value/1000)}k`} />
             <Tooltip content={<CustomTooltip />} />
             <Area type="monotone" dataKey="value" name="Portfolio Value" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorValue)" />
             {chartData[0]?.contributions !== undefined && (

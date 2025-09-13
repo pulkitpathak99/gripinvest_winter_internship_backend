@@ -5,10 +5,12 @@ import InvestmentRow from './InvestmentRow';
 // Reusing your Investment type from the page
 interface Investment {
   id: string;
-  currentValue: number;
+  currentValue: number; // We can calculate this later if needed
   amount: number;
   investedAt: string;
   status: 'active' | 'matured' | 'cancelled';
+  expectedReturn: number; // <-- ADD THIS
+  maturityDate: string;   // <-- ADD THIS
   product: {
     name: string;
     investmentType: string;
@@ -33,11 +35,13 @@ export default function InvestmentsTable({ investments }: InvestmentsTableProps)
         <table className="w-full text-left">
           <thead className="border-b border-slate-700">
             <tr>
-              <th className="p-3 text-sm font-medium text-gray-400">Product Name</th>
-              <th className="p-3 text-sm font-medium text-gray-400">Invested</th>
-              <th className="p-3 text-sm font-medium text-gray-400">Current Value</th>
-              <th className="p-3 text-sm font-medium text-gray-400">Invested On</th>
-              <th className="p-3 text-sm font-medium text-gray-400">Status</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Product Name</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Invested</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Current Value</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Expected Return</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Maturity Date</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Invested On</th>
+              <th className="p-3 text-sm font-medium text-gray-400 whitespace-nowrap">Status</th>
               <th className="p-3 text-sm font-medium text-gray-400"></th>
             </tr>
           </thead>

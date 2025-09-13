@@ -11,7 +11,7 @@ import  transactionRoutes from './api/routes/transaction.routes';
 import { loggingMiddleware } from './api/middlewares/logging.middleware'; 
 import { authMiddleware } from './api/middlewares/auth.middleware';
 import { profileRoutes } from './api/routes/profile.routes';
-
+import aiRoutes from './api/routes/ai.routes';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -65,7 +65,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/profile', profileRoutes);
-
+app.use('/api/ai', aiRoutes);
 
 
 app.listen(PORT, () => {

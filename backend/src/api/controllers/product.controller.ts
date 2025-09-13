@@ -27,6 +27,14 @@ export class ProductController {
     }
   }
 
+  async getProductAnalysis(req: Request, res: Response) {
+  try {
+    const analysis = await productService.getAIAnalysis(req.params.id);
+    res.json(analysis);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to generate AI analysis.' });
+  }
+}
   async createProduct(req: Request, res: Response) {
     try {
       const newProduct = await productService.createProduct(req.body);

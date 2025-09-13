@@ -81,6 +81,8 @@ export const getPortfolioDetails = async (userId: string) => {
     currentValue: inv.currentValue,
     investedAt: inv.investedAt,
     status: inv.status,
+    expectedReturn: inv.expectedReturn, 
+    maturityDate: inv.maturityDate,   
     product: { name: inv.product.name, investmentType: inv.product.investmentType },
   }));
   

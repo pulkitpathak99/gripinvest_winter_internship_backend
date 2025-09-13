@@ -4,6 +4,7 @@
 import { useState } from "react";
 import axios from "axios";
 import api from "@/lib/api";
+import { formatCurrency } from "@/lib/formatters";
 
 interface Product {
   id: string;
@@ -32,7 +33,7 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
 
     const investmentAmount = parseFloat(amount);
     if (isNaN(investmentAmount) || investmentAmount < product.minInvestment) {
-      setError(`Amount must be at least $${product.minInvestment.toLocaleString()}`);
+      setError(`Amount must be at least ${formatCurrency(product.minInvestment)}`);
       setLoading(false);
       return;
     }
@@ -62,12 +63,12 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
         <h2 className="text-2xl font-bold mb-2">Invest in {product.name}</h2>
         <div className="flex items-center gap-6 mb-6 text-gray-300">
             <p>Yield: <span className="font-semibold text-green-400">{product.annualYield}%</span></p>
-            <p>Min: <span className="font-semibold text-white">${Number(product.minInvestment).toLocaleString()}</span></p>
+            <p>Min: <span className="font-semibold text-white">{formatCurrency(Number(product.minInvestment))}</span></p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="amount" className="block text-sm font-medium text-gray-400">
-            Investment Amount ($)
+            Investment Amount (INR)
           </label>
           <input
             type="number"
@@ -75,7 +76,7 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="mt-1 block w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder={`e.g., ${Number(product.minInvestment).toLocaleString()}`}
+            placeholder={`e.g., ${formatCurrency(Number(product.minInvestment))}`}
             required
             step="100" // for easier increments
           />
