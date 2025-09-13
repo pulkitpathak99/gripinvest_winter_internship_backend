@@ -6,8 +6,10 @@ interface Log {
   endpoint: string;
   httpMethod: string;
   statusCode: number;
-  email: string | null;
   createdAt: string;
+  user: {
+    email: string;
+  } | null; // The user object can be null for unauthenticated logs
 }
 
 interface LogsTableProps {
@@ -45,7 +47,10 @@ export default function LogsTable({ logs }: LogsTableProps) {
                 </td>
                 <td className="p-4 text-white font-mono text-sm">{log.httpMethod}</td>
                 <td className="p-4 text-gray-300 font-mono text-sm">{log.endpoint}</td>
-                <td className="p-4 text-gray-400 text-sm">{log.email || 'N/A'}</td>
+                <td className="p-4 text-gray-400 text-sm">
+                  {log.user?.email || 'N/A'}
+                </td>
+                
                 <td className="p-4 text-gray-400 text-sm">{new Date(log.createdAt).toLocaleString()}</td>
               </tr>
             ))}

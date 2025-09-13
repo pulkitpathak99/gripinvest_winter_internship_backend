@@ -1,4 +1,5 @@
 // frontend/app/dashboard/transactions/page.tsx
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -7,10 +8,15 @@ import api from '@/lib/api';
 import AiSummaryCard from '@/components/transactions/AiSummaryCard';
 import LogsTable from '@/components/transactions/LogsTable';
 
-// Define the type for the data we expect from the backend
+// NEW: Define the updated data structure
+interface AiSummary {
+  text: string;
+  status: 'success' | 'warning';
+}
+
 interface TransactionData {
-  logs: any[]; // Define a stricter type if you have time
-  aiErrorSummary: string;
+  logs: any[];
+  aiErrorSummary: AiSummary; // This is now an object
 }
 
 export default function TransactionsPage() {
@@ -20,6 +26,8 @@ export default function TransactionsPage() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
+        // NOTE: This assumes your backend at GET /transactions
+        // now returns the aiErrorSummary as an object: { text: string, status: string }
         const response = await api.get('/transactions');
         setData(response.data);
       } catch (error) {
@@ -41,8 +49,8 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-6">
+      {/* This now passes the entire summary object to the component */}
       <AiSummaryCard summary={data.aiErrorSummary} />
-      {/* We can add filter components here in the future */}
       <LogsTable logs={data.logs} />
     </div>
   );

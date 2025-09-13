@@ -55,26 +55,34 @@ async function summarizeErrorsWithAI(errorLogs: any[]): Promise<string> {
   }
 }
 
+// backend/src/api/services/transaction.service.ts
+
 export const getTransactionLogs = async (userId: string) => {
   try {
     const logs = await prisma.transactionLog.findMany({
       where: { userId: userId },
       orderBy: { createdAt: 'desc' },
       take: 200,
+      // CORRECTED: Select specific fields, including the user's email via the relation
       select: {
         id: true,
         statusCode: true,
         httpMethod: true,
         endpoint: true,
-        email: true,
         createdAt: true,
         errorMessage: true,
-      }
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
 
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const recentErrorLogs = logs.filter(log =>
-      log.statusCode >= 400 && new Date(log.createdAt) > twentyFourHoursAgo
+    const recentErrorLogs = logs.filter(
+      (log) =>
+        log.statusCode >= 400 && new Date(log.createdAt) > twentyFourHoursAgo
     );
 
     const aiErrorSummary = await summarizeErrorsWithAI(recentErrorLogs);
@@ -84,9 +92,7 @@ export const getTransactionLogs = async (userId: string) => {
       aiErrorSummary,
     };
   } catch (err) {
-    // log full error for debugging
     console.error("Error in getTransactionLogs:", err);
-    // rethrow so controller can return a 500, but with better logs available
     throw err;
   }
 };
