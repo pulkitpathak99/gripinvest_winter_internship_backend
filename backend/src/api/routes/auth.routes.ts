@@ -1,16 +1,18 @@
+// backend/src/api/routes/auth.routes.ts
 import { Router } from 'express';
-import * as authController from '../controllers/auth.controller';
+import { handleSignup, handleLogin } from '../controllers/auth.controller';
+import { handleForgotPassword, handleResetPassword } from '../controllers/auth.controller';
+
 
 const router = Router();
 
-router.post('/signup', (req, res, next) => {
-  console.log('➡️ Signup route hit');
-  return authController.signup(req, res).catch(next);
-});
+// --- PUBLIC ROUTES ---
+// These routes should NOT have any authentication middleware applied to them.
+router.post('/signup', handleSignup);
+router.post('/login', handleLogin);
+router.post('/forgot-password', handleForgotPassword);
+router.post('/reset-password', handleResetPassword);
 
-router.post('/login', (req, res, next) => {
-  console.log('➡️ Login route hit');
-  return authController.login(req, res).catch(next);
-});
 
-export default router;
+// Export the router as a named export called 'authRoutes'
+export { router as authRoutes };

@@ -23,6 +23,12 @@ router.post(
   productController.createProduct.bind(productController)
 );
 
+router.post(
+  '/generate-description',
+  authMiddleware,
+  adminMiddleware,
+  productController.generateDescription.bind(productController)
+);
 // PUT /api/products/:id - Admin only
 router.put(
   '/:id',

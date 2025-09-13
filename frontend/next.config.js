@@ -2,7 +2,12 @@
 const nextConfig = {
   // Enable standalone build for Docker
   output: 'standalone',
-  
+  experimental: {
+    outputFileTracingRoot: undefined,
+    fontLoaders: [
+      { loader: '@next/font/google', options: { subsets: ['latin'] } },
+    ],
+  },
   // Fix turbopack workspace root warning
   turbopack: {
     root: '/app'

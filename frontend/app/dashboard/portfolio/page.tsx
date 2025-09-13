@@ -1,109 +1,87 @@
-// frontend/app/(dashboard)/portfolio/page.tsx
+// frontend/app/dashboard/portfolio/page.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { Dispatch, SetStateAction } from 'react';
+import KpiCard from '@/components/portfolio/KpiCard';
+import PerformanceChart from '@/components/portfolio/PerformanceChart';
+import InvestmentsTable from '@/components/portfolio/InvestmentsTable';
+import AssetAllocationChart from '@/components/portfolio/AssetAllocationChart';
+import { TrendingUp, Landmark, Wallet, PlusCircle } from 'lucide-react';
 
-// Define types for portfolio data
-interface Investment {
-  id: string;
-  amount: number;
-  investedAt: string;
-  product: {
-    name: string;
-    investmentType: string;
-  };
+// Define a stricter type for our data
+interface PerformanceDataPoint { date: string; value: number; contributions: number; earnings: number; }
+interface PortfolioDetails {
+  kpis: { totalValue: number; totalInvested: number; overallGain: number; };
+  performanceData: { [key: string]: PerformanceDataPoint[] };
+  assetAllocation: { name: string; value: number }[];
+  investmentList: any[];
 }
 
-// Type for chart data
-interface ChartData {
-  name: string;
-  value: number;
+type Timeframe = '1M' | '6M' | '1Y' | 'All';
+
+interface PerformanceChartProps {
+  data: { [key: string]: any[] };
+  timeframe: Timeframe;
+  setTimeframe: Dispatch<SetStateAction<Timeframe>>;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function PortfolioPage() {
-  const [investments, setInvestments] = useState<Investment[]>([]);
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [totalValue, setTotalValue] = useState(0);
+  const [portfolio, setPortfolio] = useState<PortfolioDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState<Timeframe>('1Y');
 
   useEffect(() => {
-    const fetchPortfolio = async () => {
+    const fetchPortfolioDetails = async () => {
       try {
-        const response = await api.get('/investments/portfolio');
-        const data: Investment[] = response.data;
-        setInvestments(data);
-
-        // Calculate total portfolio value
-        const total = data.reduce((acc, curr) => acc + Number(curr.amount), 0);
-        setTotalValue(total);
-
-        // Process data for the pie chart
-        const distribution = data.reduce((acc, curr) => {
-          const type = curr.product.investmentType.toUpperCase();
-          acc[type] = (acc[type] || 0) + Number(curr.amount);
-          return acc;
-        }, {} as Record<string, number>);
-
-        const formattedChartData = Object.keys(distribution).map(key => ({
-          name: key,
-          value: distribution[key],
-        }));
-        setChartData(formattedChartData);
-
+        const response = await api.get('/portfolio/details');
+        setPortfolio(response.data);
       } catch (error) {
-        console.error('Failed to fetch portfolio:', error);
+        console.error('Failed to fetch portfolio details:', error);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchPortfolio();
+    fetchPortfolioDetails();
   }, []);
 
-  if (loading) return <p>Loading portfolio...</p>;
+  if (loading) return <div className="text-center text-gray-300">Loading Your Portfolio...</div>;
+  if (!portfolio) return <div className="text-center text-red-400">Could not load portfolio data.</div>;
+
+  // --- DYNAMIC KPI CALCULATIONS ---
+  const timeData = portfolio.performanceData[timeframe];
+  const beginningBalance = timeData[0]?.value - (timeData[0]?.value - timeData[0]?.contributions - timeData[0]?.earnings);
+  const endingBalance = timeData[timeData.length - 1]?.value;
+  const netContributions = timeData[timeData.length - 1]?.contributions - timeData[0]?.contributions;
+  const earnings = endingBalance - beginningBalance - netContributions;
+  const earningsColor = earnings >= 0 ? 'text-green-400' : 'text-red-400';
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-2">My Portfolio</h1>
-      <p className="text-gray-600 mb-6">Total Value: <span className="font-bold text-xl">${totalValue.toLocaleString()}</span></p>
+    <div className="space-y-6">
+      {/* Section 1: Dynamic KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KpiCard title="Beginning Balance" value={`$${beginningBalance.toLocaleString()}`} icon={Wallet} />
+        <KpiCard title="Net Contributions" value={`$${netContributions.toLocaleString()}`} icon={PlusCircle} />
+        <KpiCard title="Earnings" value={`$${earnings.toLocaleString()}`} icon={TrendingUp} changeColor={earningsColor} />
+        <KpiCard title="Ending Balance" value={`$${endingBalance.toLocaleString()}`} icon={Landmark} />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Chart Section */}
-        <div className="bg-white p-6 rounded-lg shadow-md h-96">
-          <h2 className="text-xl font-semibold mb-4">Asset Distribution</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} fill="#8884d8" label>
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+      {/* Section 2: Interactive Performance Chart */}
+      <PerformanceChart
+        data={portfolio.performanceData}
+        timeframe={timeframe}
+        setTimeframe={setTimeframe} // <-- Pass the state setter directly
+      />
+
+      {/* Section 3: Allocation and Table */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <AssetAllocationChart data={portfolio.assetAllocation} />
         </div>
-
-        {/* Investments List Section */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">My Investments</h2>
-          <div className="space-y-4">
-            {investments.map(inv => (
-              <div key={inv.id} className="border-b pb-2">
-                <div className="flex justify-between font-semibold">
-                  <span>{inv.product.name}</span>
-                  <span>${Number(inv.amount).toLocaleString()}</span>
-                </div>
-                <div className="text-sm text-gray-500">
-                  Invested on: {new Date(inv.investedAt).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="lg:col-span-2">
+          <InvestmentsTable investments={portfolio.investmentList} />
         </div>
       </div>
     </div>

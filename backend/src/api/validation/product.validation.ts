@@ -1,15 +1,19 @@
 // backend/src/api/validation/product.validation.ts
 import { z } from 'zod';
 
-export const createProductSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters long'),
-  investmentType: z.enum(['bond', 'etf', 'fd']), // matches your Prisma enum
-  tenureMonths: z.number().int().positive(),
-  annualYield: z.number().positive(),
-  riskLevel: z.enum(['low', 'medium', 'high']), // matches your Prisma enum
-  minInvestment: z.number().int().positive(),
-  maxInvestment: z.number().int().positive().optional(), // added this line
-  description: z.string().min(10, 'Description must be at least 10 characters long'),
+// Base schema with all the fields from your form
+const productSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters long"),
+  investmentType: z.enum(['bond', 'etf', 'fd', 'mf', 'other']),
+  tenureMonths: z.number().int().positive("Tenure must be a positive number of months"),
+  annualYield: z.number().positive("Annual yield must be a positive number"),
+  riskLevel: z.enum(['low', 'moderate', 'high']),
+  minInvestment: z.number().positive("Minimum investment must be positive"),
+  description: z.string().min(10, "Description must be at least 10 characters long").optional(),
 });
 
-export const updateProductSchema = createProductSchema.partial();
+// Schema for creating a product (all fields are required)
+export const createProductSchema = productSchema;
+
+// Schema for updating a product (all fields are optional)
+export const updateProductSchema = productSchema.partial();

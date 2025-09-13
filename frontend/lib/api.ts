@@ -1,5 +1,6 @@
 // frontend/lib/api.ts
 import axios from 'axios';
+import { DashboardData } from '@/app/dashboard/page'; 
 
 const api = axios.create({
   baseURL: 'http://localhost:3001/api', // Your backend URL
@@ -20,5 +21,16 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export const fetchDashboardSummary = async (): Promise<DashboardData> => {
+    try {
+        const response = await api.get('/dashboard/summary');
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch dashboard summary:', error);
+        // Re-throw the error to be handled by the component
+        throw error;
+    }
+};
 
 export default api;

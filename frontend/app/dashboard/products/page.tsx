@@ -1,13 +1,18 @@
-// frontend/app/(dashboard)/products/page.tsx
+// frontend/app/dashboard/products/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '@/lib/api';
-import { useRouter } from 'next/navigation'; // <-- Import useRouter
-import InvestmentModal from '@/components/InvestmentModal'; // <-- Import the modal
-import { toast } from "react-toastify"; 
+import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
+import { useAuth } from '@/context/AuthContext'; // <-- Import useAuth
 
-// Expanded Product type to include minInvestment
+// Import components
+import ProductCard from '@/components/ProductCard';
+import ProductFilters from '@/components/ProductFilters';
+import InvestmentModal from '@/components/InvestmentModal';
+
+// Product interface remains the same
 interface Product {
   id: string;
   name: string;
@@ -20,13 +25,19 @@ interface Product {
 }
 
 export default function ProductsPage() {
+  const { user } = useAuth(); // <-- Get user for AI recommendation
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // <-- State for the modal
-  const router = useRouter(); // <-- Initialize router
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const router = useRouter();
+
+  // --- NEW: State for filters ---
+  const [filters, setFilters] = useState({
+    type: 'All',
+    risk: 'All',
+  });
 
   useEffect(() => {
-    // ... (fetchProducts function remains the same)
     const fetchProducts = async () => {
       try {
         const response = await api.get('/products');
@@ -40,42 +51,73 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  const handleInvestmentSuccess = () => {
-    setSelectedProduct(null); // close modal immediately
-    toast.success("Investment successful! 🎉");
+  // --- NEW: Handler for filter changes ---
+  const handleFilterChange = (key: 'type' | 'risk', value: string) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [key]: value
+    }));
+  };
 
-    // redirect after a short delay (so toast is visible)
+  // --- NEW: Handler for AI Recommendation button ---
+  const handleAiRecommend = () => {
+    if (user?.riskAppetite) {
+      setFilters(prev => ({ ...prev, risk: user.riskAppetite}));
+      toast.info(`Showing products that match your "${user.riskAppetite}" risk appetite!`);
+    } else {
+      toast.error("Could not determine your risk appetite. Please set it in your profile.");
+    }
+  };
+
+  // --- NEW: Memoized filtering logic ---
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const typeMatch = filters.type === 'All' || product.investmentType.toLowerCase() === filters.type.toLowerCase();
+      const riskMatch = filters.risk === 'All' || product.riskLevel === filters.risk; // <-- CORRECTED
+      return typeMatch && riskMatch;
+    });
+  }, [products, filters]);
+
+  const handleInvestmentSuccess = () => {
+    setSelectedProduct(null);
+    toast.success("Investment successful! 🎉 Your portfolio is updated.");
     setTimeout(() => {
-      router.push("/portfolio");
+      router.push("/dashboard/portfolio");
     }, 1200);
   };
 
-  if (loading) return <p>Loading products...</p>;
-
+  if (loading) {
+    return <div className="text-center text-gray-300">Loading Investment Products...</div>;
+  }
+  
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Investment Products</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-              <p className="text-gray-600">Type: {product.investmentType.toUpperCase()}</p>
-              <p className="text-gray-800 font-bold text-2xl my-3">{product.annualYield}% <span className="text-sm font-normal">p.a.</span></p>
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Risk: <span className="font-medium text-black">{product.riskLevel}</span></span>
-                <span>Tenure: <span className="font-medium text-black">{product.tenureMonths} months</span></span>
-              </div>
-            </div>
-            {/* --- THIS IS THE NEW BUTTON --- */}
-            <button onClick={() => setSelectedProduct(product)} className="block mt-4 text-center w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-              Invest Now
-            </button>
-          </div>
-        ))}
-      </div>
+      {/* Pass state and handlers down to the filter component */}
+      <ProductFilters 
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onAiRecommend={handleAiRecommend}
+      />
+      
+      {/* If no products match, show a message */}
+      {filteredProducts.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">
+            <h3 className="text-xl font-semibold">No Products Found</h3>
+            <p>Try adjusting your filters to find more investment opportunities.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Map over the filtered list, not the original one */}
+          {filteredProducts.map((product) => (
+            <ProductCard 
+              key={product.id} 
+              product={product} 
+              onInvestClick={() => setSelectedProduct(product)} 
+            />
+          ))}
+        </div>
+      )}
 
-      {/* --- RENDER THE MODAL CONDITIONALLY --- */}
       {selectedProduct && (
         <InvestmentModal
           product={selectedProduct}

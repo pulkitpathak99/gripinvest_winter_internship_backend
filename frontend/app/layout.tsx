@@ -1,11 +1,16 @@
 // frontend/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+// CHANGED: Import 'localFont' instead of 'Inter'
+import localFont from 'next/font/local';
 import { AuthProvider } from '@/context/AuthContext';
 import ToastProvider from '@/components/ToastProvider';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// CHANGED: Initialize the font from the local file
+const inter = localFont({
+  src: './fonts/Inter-VariableFont_opsz,wght.ttf',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Grip Invest Platform',

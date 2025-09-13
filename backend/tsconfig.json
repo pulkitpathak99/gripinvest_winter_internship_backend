@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "moduleResolution": "node",
+    "types": ["node"],
     "paths": {
       "api/*": ["api/*"],
       "config/*": ["config/*"],

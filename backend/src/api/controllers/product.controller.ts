@@ -55,4 +55,12 @@ export class ProductController {
       res.status(500).json({ error: 'Failed to delete product' });
     }
   }
+  async generateDescription(req: Request, res: Response) {
+    try {
+      const { description } = await productService.generateAIDescription(req.body);
+      res.json({ description });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to generate description' });
+    }
+  }
 }

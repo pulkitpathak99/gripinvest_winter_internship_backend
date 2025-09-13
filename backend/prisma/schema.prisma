@@ -1,7 +1,7 @@
 // backend/prisma/schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -10,63 +10,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- UPDATED USER MODEL ---
-model User {
-  id            String    @id @default(uuid())
-  firstName     String    @map("first_name")
-  lastName      String?   @map("last_name")
-  email         String    @unique
-  passwordHash  String    @map("password_hash")
-  riskAppetite  RiskAppetite @default(moderate) @map("risk_appetite")
-  role          UserRole  @default(USER) // <-- ADD THIS LINE
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+// --- MODELS ---
 
-  // Relation to Investments
-  investments   Investment[] // <-- ADD THIS RELATION
+model User {
+  id              String           @id @default(uuid())
+  firstName       String           @map("first_name")
+  lastName        String?          @map("last_name")
+  email           String           @unique
+  passwordHash    String           @map("password_hash")
+  riskAppetite    RiskAppetite     @default(moderate) @map("risk_appetite")
+  role            UserRole         @default(USER)
+  passwordResetToken   String?   @unique
+  passwordResetExpires DateTime?
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  investments     Investment[]
+  transactionLogs TransactionLog[]
 
   @@map("users")
 }
 
-// --- NEW INVESTMENT PRODUCT MODEL ---
 model InvestmentProduct {
-  id             String    @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String
   investmentType InvestmentType @map("investment_type")
-  tenureMonths   Int       @map("tenure_months")
-  annualYield    Decimal   @db.Decimal(5, 2) @map("annual_yield")
-  riskLevel      RiskAppetite @map("risk_level")
-  minInvestment  Decimal   @default(1000.00) @db.Decimal(12, 2) @map("min_investment")
-  maxInvestment  Decimal?  @db.Decimal(12, 2) @map("max_investment")
-  description    String?   @db.Text
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-
-  // Relation to Investments
-  investments    Investment[] // <-- ADD THIS RELATION
+  tenureMonths   Int            @map("tenure_months")
+  annualYield    Decimal        @map("annual_yield") @db.Decimal(5, 2)
+  riskLevel      RiskAppetite   @map("risk_level")
+  minInvestment  Decimal        @default(1000.00) @map("min_investment") @db.Decimal(12, 2)
+  maxInvestment  Decimal?       @map("max_investment") @db.Decimal(12, 2)
+  description    String?        @db.Text
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  investments    Investment[]
 
   @@map("investment_products")
 }
 
-// --- NEW INVESTMENT MODEL ---
 model Investment {
-  id              String    @id @default(uuid())
-  userId          String    @map("user_id")
-  productId       String    @map("product_id")
-  amount          Decimal   @db.Decimal(12, 2)
-  investedAt      DateTime  @default(now()) @map("invested_at")
-  status          InvestmentStatus @default(active)
-  expectedReturn  Decimal?  @db.Decimal(12, 2) @map("expected_return")
-  maturityDate    DateTime? @db.Date @map("maturity_date")
-
-  // Relations
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product         InvestmentProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id             String            @id @default(uuid())
+  userId         String            @map("user_id")
+  productId      String            @map("product_id")
+  amount         Decimal           @db.Decimal(12, 2)
+  investedAt     DateTime          @default(now()) @map("invested_at")
+  status         InvestmentStatus  @default(active)
+  expectedReturn Decimal?          @map("expected_return") @db.Decimal(12, 2)
+  maturityDate   DateTime?         @map("maturity_date") @db.Date
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product        InvestmentProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("investments")
 }
 
+model TransactionLog {
+  id           BigInt     @id @default(autoincrement())
+  userId       String?    @map("user_id")
+  email        String?
+  endpoint     String
+  httpMethod   HttpMethod @map("http_method")
+  statusCode   Int        @map("status_code")
+  errorMessage String?    @map("error_message") @db.Text
+  createdAt    DateTime   @default(now()) @map("created_at")
+  user         User?      @relation(fields: [userId], references: [id])
+
+  @@map("transaction_logs")
+}
+
 // --- ENUMS ---
+
 enum UserRole {
   USER
   ADMIN
@@ -90,4 +101,11 @@ enum InvestmentStatus {
   active
   matured
   cancelled
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  DELETE
 }
