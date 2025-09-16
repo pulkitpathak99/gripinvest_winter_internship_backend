@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": ["node","jest"],
     "paths": {
       "api/*": ["api/*"],
       "config/*": ["config/*"],

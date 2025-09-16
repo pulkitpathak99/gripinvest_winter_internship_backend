@@ -1,3 +1,5 @@
+//frontend/next.config.js
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable standalone build for Docker

@@ -80,6 +80,7 @@ export default function AuthPage() {
   layout // This makes the form smoothly animate its size changes
   onSubmit={handleSubmit} 
   className="space-y-5"
+  data-testid="auth-form" 
 >
   <AnimatePresence>
     {!isLoginMode && (

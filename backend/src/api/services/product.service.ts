@@ -1,11 +1,10 @@
 //backend/src/api/services/product.service.ts
 
-import { PrismaClient, InvestmentProduct } from '@prisma/client';
-import { generateContentWithFallback } from '../utils/aiHelper'; // <-- Import our new helper
+import { type InvestmentProduct } from '@prisma/client';
+import prisma from '../utils/prismaClient';
+import { generateContentWithFallback } from '../utils/aiHelper';
 
-const prisma = new PrismaClient();
 
-// This helper function now uses the centralized AI logic
 async function generateDescription(product: any): Promise<string> {
   const prompt = `
     Generate a compelling, one-paragraph product description for an investment product with the following details:
@@ -21,7 +20,6 @@ async function generateDescription(product: any): Promise<string> {
     return await generateContentWithFallback(prompt);
   } catch (error) {
     console.error("AI description generation failed:", error);
-    // Fallback to a simple, structured description if AI fails
     return `This is a ${product.investmentType} named "${product.name}" with a risk level of ${product.riskLevel}. It offers an annual yield of ${product.annualYield}% over a period of ${product.tenureMonths} months.`;
   }
 }

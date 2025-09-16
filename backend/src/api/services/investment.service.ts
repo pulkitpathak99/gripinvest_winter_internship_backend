@@ -1,8 +1,7 @@
 // backend/src/api/services/investment.service.ts
-import { PrismaClient } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 
-const prisma = new PrismaClient();
+import prisma  from '../utils/prismaClient';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export const createInvestment = async (userId: string, productId: string, amount: number) => {
   const product = await prisma.investmentProduct.findUnique({ where: { id: productId } });

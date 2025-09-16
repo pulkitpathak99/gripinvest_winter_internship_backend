@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import api from '@/lib/api';
 import Link from 'next/link';
+import { formatCurrency } from '@/lib/formatters';
 
 // Expanded type to include all details
 interface InvestmentDetails {
@@ -59,11 +60,11 @@ export default function InvestmentDetailPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
           <div>
             <p className="text-sm text-gray-400">Invested Amount</p>
-            <p className="text-xl font-semibold text-white">${Number(investment.amount).toLocaleString()}</p>
+            <p className="text-xl font-semibold text-white">{formatCurrency(Number(investment.amount))}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400">Expected Return</p>
-            <p className="text-xl font-semibold text-green-400">+${Number(investment.expectedReturn).toLocaleString()}</p>
+            <p className="text-xl font-semibold text-green-400">+{formatCurrency(Number(investment.expectedReturn))}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400">Maturity Date</p>

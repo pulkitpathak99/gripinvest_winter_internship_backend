@@ -1,8 +1,7 @@
 // backend/src/api/services/ai.service.ts
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { PrismaClient } from '@prisma/client';
+import prisma  from '../utils/prismaClient';
 
-const prisma = new PrismaClient();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const aiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 

@@ -1,9 +1,8 @@
 //backend/src/api/services/dashboard.service.ts
 
-import { PrismaClient } from '@prisma/client';
+import prisma  from '../utils/prismaClient';
 import { generateContentWithFallback } from '../utils/aiHelper';
 
-const prisma = new PrismaClient();
 
 async function getAiInsight(distribution: any[]): Promise<string> {
   if (distribution.length === 0) {

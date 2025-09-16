@@ -1,20 +1,15 @@
 // backend/src/api/services/transaction.service.ts
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prismaClient';
 import { generateContentWithFallback } from '../utils/aiHelper';
 
-const prisma = new PrismaClient();
-
-// NEW: Define the type for our summary object
 interface AiSummary {
   text: string;
   status: 'success' | 'warning';
 }
 
-// CHANGED: This function now returns a Promise of our AiSummary object
 async function summarizeErrorsWithAI(errorLogs: any[]): Promise<AiSummary> {
   if (!errorLogs || errorLogs.length === 0) {
-    // CHANGED: Return the object format
     return {
       text: "No errors detected in the last 24 hours. The system is operating smoothly.",
       status: 'success',
@@ -34,14 +29,12 @@ async function summarizeErrorsWithAI(errorLogs: any[]): Promise<AiSummary> {
   
   try {
     const summaryText = await generateContentWithFallback(prompt);
-    // CHANGED: Return the object format
     return {
       text: summaryText,
-      status: 'warning', // If there are errors, the status is 'warning'
+      status: 'warning',
     };
   } catch (error) {
     console.error("AI summary generation failed after fallback:", error);
-    // CHANGED: Return the object format
     return {
       text: "Could not generate AI summary due to an issue with the AI service.",
       status: 'warning',
@@ -70,13 +63,11 @@ export const getTransactionLogs = async (userId: string) => {
     const recentErrorLogs = logs.filter(
       (log) => log.statusCode >= 400 && new Date(log.createdAt) > twentyFourHoursAgo
     );
-
-    // This variable now correctly holds the AiSummary object
     const aiErrorSummary = await summarizeErrorsWithAI(recentErrorLogs);
 
     return {
       logs,
-      aiErrorSummary, // This is now an object, which matches the frontend's expectation
+      aiErrorSummary, 
     };
   } catch (err) {
     console.error("Error in getTransactionLogs:", err);

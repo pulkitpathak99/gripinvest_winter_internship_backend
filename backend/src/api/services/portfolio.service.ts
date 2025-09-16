@@ -1,9 +1,7 @@
 // backend/src/api/services/portfolio.service.ts
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import prisma  from '../utils/prismaClient';
 
-// This detailed helper function creates the complete data your frontend needs
 const generateDetailedPerformance = (investments: any[], totalValue: number) => {
   const history: { date: string; value: number; contributions: number; earnings: number }[] = [];
   const today = new Date();

@@ -1,10 +1,10 @@
 // backend/src/api/services/auth.service.ts
-import { PrismaClient } from '@prisma/client';
+
+import prisma  from '../utils/prismaClient';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const prisma = new PrismaClient();
 
 
 export const forgotPassword = async (email: string) => {

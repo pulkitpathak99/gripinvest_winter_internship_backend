@@ -5,9 +5,6 @@ import { handleForgotPassword, handleResetPassword } from '../controllers/auth.c
 
 
 const router = Router();
-
-// --- PUBLIC ROUTES ---
-// These routes should NOT have any authentication middleware applied to them.
 router.post('/signup', handleSignup);
 router.post('/login', handleLogin);
 router.post('/forgot-password', handleForgotPassword);

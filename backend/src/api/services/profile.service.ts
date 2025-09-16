@@ -1,9 +1,8 @@
 // backend/src/api/services/profile.service.ts
-import { PrismaClient, RiskAppetite } from '@prisma/client';
+import { type RiskAppetite } from '@prisma/client';
+import prisma from '../utils/prismaClient';
 import bcrypt from 'bcryptjs';
 import { generateContentWithFallback } from '../utils/aiHelper'; // <-- Import our new helper
-
-const prisma = new PrismaClient();
 
 /**
  * Generates AI-powered product recommendations based on risk appetite.

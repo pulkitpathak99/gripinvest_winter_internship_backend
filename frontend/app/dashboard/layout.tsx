@@ -82,7 +82,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </Link>
     ))}
 
-    {/* THEN, after the loop, render the admin section if the user is an admin */}
     {user?.role === 'ADMIN' && (
       <>
         <div className="pt-4 mt-4 border-t border-slate-800">
@@ -112,12 +111,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </div>
             </aside>
 
-            {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Top Header - NOW DYNAMIC */}
                 <header className="bg-slate-950/50 backdrop-blur-sm border-b border-slate-800 p-4 flex items-center justify-between">
                    <div>
-                        {/* --- DYNAMIC TITLE --- */}
                         <h1 className="text-xl font-semibold text-white">{currentTitle}</h1>
                    </div>
                    <div className="flex items-center gap-4">

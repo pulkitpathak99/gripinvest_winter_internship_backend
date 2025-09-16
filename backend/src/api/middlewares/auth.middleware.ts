@@ -1,9 +1,7 @@
 // backend/src/api/middlewares/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prismaClient';
 
 // Extend the Express Request type to include the user object
 export interface AuthRequest extends Request {

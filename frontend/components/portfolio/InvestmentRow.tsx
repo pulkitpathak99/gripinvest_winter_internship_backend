@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { Menu, Transition } from '@headlessui/react';
+import { formatCurrency } from '@/lib/formatters';
 
 interface Investment {
   id: string;
@@ -54,10 +55,10 @@ export default function InvestmentRow({ investment: initialInvestment }: { inves
   return (
     <tr className="border-b border-slate-800 hover:bg-slate-800/50">
       <td className="p-3 text-white whitespace-nowrap">{investment.product?.name ?? 'N/A'}</td>
-      <td className="p-3 text-gray-300 whitespace-nowrap">${Number(investment.amount).toLocaleString()}</td>
-      <td className="p-3 text-gray-300 whitespace-nowrap">${Number(investment.currentValue).toLocaleString()}</td>
+      <td className="p-3 text-gray-300 whitespace-nowrap">{formatCurrency(Number(investment.amount))}</td>
+      <td className="p-3 text-gray-300 whitespace-nowrap">{formatCurrency(investment.currentValue)}</td>
       <td className="p-3 text-green-400 font-medium whitespace-nowrap">
-        +${Number(investment.expectedReturn).toLocaleString()}
+        +{formatCurrency(Number(investment.expectedReturn))}
       </td>
       <td className="p-3 text-gray-300 whitespace-nowrap">
         {new Date(investment.maturityDate).toLocaleDateString()}
