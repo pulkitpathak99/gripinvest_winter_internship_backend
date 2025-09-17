@@ -186,6 +186,18 @@ docker-compose exec backend npx prisma db seed
 - **Backend API**: http://localhost:3001
 - **Health Check**: http://localhost:3001/health
 
+### 7. Testing the Application
+
+#### Admin Features Testing
+1. Login with admin credentials: `admin@gripinvest.com` / `AdminPassword123!`
+2. Access admin panel at: http://localhost:3000/admin
+3. Test product creation, AI description generation, and user analytics
+
+Create your own user account through the signup process
+Or use any test credentials you create during development
+
+Note: The admin account is automatically seeded into the database during the initial setup. Admin users have additional privileges including product management and AI content generation features.
+
 ## 📝 API Endpoints
 
 | Method             | Endpoint                       | Description                     | Auth Required |
