@@ -1,13 +1,13 @@
 // frontend/components/profile/ProfileDetailsCard.tsx
 "use client";
-import { useState } from 'react';
-import { User, Edit3, Save } from 'lucide-react';
+import { useState } from "react";
+import { User, Edit3, Save } from "lucide-react";
 
 export default function ProfileDetailsCard({ profile, onUpdate }: any) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: profile.firstName,
-    lastName: profile.lastName || '',
+    lastName: profile.lastName || "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,8 +23,17 @@ export default function ProfileDetailsCard({ profile, onUpdate }: any) {
     <div className="bg-slate-800/50 border border-slate-800 rounded-xl p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-white">Profile Details</h3>
-        <button onClick={() => setIsEditing(!isEditing)} className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2">
-          {isEditing ? 'Cancel' : <><Edit3 size={14} /> Edit</>}
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2"
+        >
+          {isEditing ? (
+            "Cancel"
+          ) : (
+            <>
+              <Edit3 size={14} /> Edit
+            </>
+          )}
         </button>
       </div>
       <div className="space-y-4">
@@ -60,7 +69,10 @@ export default function ProfileDetailsCard({ profile, onUpdate }: any) {
           />
         </div>
         {isEditing && (
-          <button onClick={handleSave} className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2">
+          <button
+            onClick={handleSave}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2"
+          >
             <Save size={16} /> Save Changes
           </button>
         )}

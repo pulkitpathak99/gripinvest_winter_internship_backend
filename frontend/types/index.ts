@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   investmentType: string;
   annualYield: number;
-  riskLevel: 'low' | 'moderate' | 'high';
+  riskLevel: "low" | "moderate" | "high";
   tenureMonths: number;
   minInvestment: number;
   maxInvestment: number | null;

@@ -2,16 +2,16 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
 
-import AiSummaryCard from '@/components/transactions/AiSummaryCard';
-import LogsTable from '@/components/transactions/LogsTable';
+import AiSummaryCard from "@/components/transactions/AiSummaryCard";
+import LogsTable from "@/components/transactions/LogsTable";
 
 // NEW: Define the updated data structure
 interface AiSummary {
   text: string;
-  status: 'success' | 'warning';
+  status: "success" | "warning";
 }
 
 interface TransactionData {
@@ -28,7 +28,7 @@ export default function TransactionsPage() {
       try {
         // NOTE: This assumes your backend at GET /transactions
         // now returns the aiErrorSummary as an object: { text: string, status: string }
-        const response = await api.get('/transactions');
+        const response = await api.get("/transactions");
         setData(response.data);
       } catch (error) {
         console.error("Failed to fetch transaction logs:", error);
@@ -40,11 +40,19 @@ export default function TransactionsPage() {
   }, []);
 
   if (loading) {
-    return <div className="text-center text-gray-300">Loading Transaction Logs...</div>;
+    return (
+      <div className="text-center text-gray-300">
+        Loading Transaction Logs...
+      </div>
+    );
   }
 
   if (!data) {
-    return <div className="text-center text-red-400">Could not load transaction data.</div>;
+    return (
+      <div className="text-center text-red-400">
+        Could not load transaction data.
+      </div>
+    );
   }
 
   return (

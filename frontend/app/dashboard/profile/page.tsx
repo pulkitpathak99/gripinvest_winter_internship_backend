@@ -1,21 +1,21 @@
 // frontend/app/dashboard/profile/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
-import api from '@/lib/api';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
+import { toast } from "react-toastify";
 
-import ProfileDetailsCard from '@/components/profile/ProfileDetailsCard';
-import RiskAppetiteCard from '@/components/profile/RiskAppetiteCard';
-import AiRecommendationsCard from '@/components/profile/AiRecommendationsCard';
-import SecuritySettingsCard from '@/components/profile/SecuritySettingsCard'; // <-- Import new component
+import ProfileDetailsCard from "@/components/profile/ProfileDetailsCard";
+import RiskAppetiteCard from "@/components/profile/RiskAppetiteCard";
+import AiRecommendationsCard from "@/components/profile/AiRecommendationsCard";
+import SecuritySettingsCard from "@/components/profile/SecuritySettingsCard"; // <-- Import new component
 
 // Define types for our data
 interface Profile {
   firstName: string;
   lastName: string;
   email: string;
-  riskAppetite: 'low' | 'moderate' | 'high';
+  riskAppetite: "low" | "moderate" | "high";
 }
 interface Recommendations {
   summary: string;
@@ -24,15 +24,16 @@ interface Recommendations {
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [recommendations, setRecommendations] = useState<Recommendations | null>(null);
+  const [recommendations, setRecommendations] =
+    useState<Recommendations | null>(null);
   const [loading, setLoading] = useState(true);
 
   // This data fetching logic is perfect as is.
   const fetchProfileData = async () => {
     try {
       const [profileRes, recRes] = await Promise.all([
-        api.get('/profile'),
-        api.get('/profile/recommendations')
+        api.get("/profile"),
+        api.get("/profile/recommendations"),
       ]);
       setProfile(profileRes.data);
       setRecommendations(recRes.data);
@@ -51,12 +52,12 @@ export default function ProfilePage() {
   // This update logic is also perfect.
   const handleProfileUpdate = async (data: any) => {
     try {
-      const response = await api.put('/profile', data);
+      const response = await api.put("/profile", data);
       setProfile(response.data);
       toast.success("Profile updated successfully!");
-      
+
       if (data.riskAppetite) {
-        const recRes = await api.get('/profile/recommendations');
+        const recRes = await api.get("/profile/recommendations");
         setRecommendations(recRes.data);
       }
     } catch (error) {
@@ -79,10 +80,13 @@ export default function ProfilePage() {
         <ProfileDetailsCard profile={profile} onUpdate={handleProfileUpdate} />
         <SecuritySettingsCard /> {/* <-- Add the new component here */}
       </div>
-      
+
       {/* --- RIGHT COLUMN --- */}
       <div className="lg:col-span-2 flex flex-col gap-6">
-        <RiskAppetiteCard currentRisk={profile.riskAppetite} onUpdate={handleProfileUpdate} />
+        <RiskAppetiteCard
+          currentRisk={profile.riskAppetite}
+          onUpdate={handleProfileUpdate}
+        />
         <AiRecommendationsCard recommendations={recommendations} />
       </div>
     </div>

@@ -1,5 +1,5 @@
 // frontend/stores/chatbotStore.ts
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface ChatbotState {
   isOpen: boolean;

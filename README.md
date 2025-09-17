@@ -5,6 +5,7 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 ## ✨ Core Features
 
 ### 🔐 Authentication & Security
+
 - **Secure User Authentication**: JWT-based signup and login system
 - **Password Management**: Complete password reset flow with email verification
 - **Change Password**: Secure password update functionality for authenticated users
@@ -12,6 +13,7 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 - **Protected Routes**: Role-based access control for admin and user areas
 
 ### 💼 Investment Management
+
 - **Product Discovery**: Comprehensive gallery of investment products (bonds, ETFs, FDs, etc.)
 - **Advanced Filtering**: Dynamic product filters by category, risk level, and returns
 - **Interactive Investing**: Seamless investment flow through modal interfaces
@@ -19,6 +21,7 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 - **Investment Cancellation**: Cancel recent investments with proper validation
 
 ### 📊 Portfolio & Analytics
+
 - **Dynamic Dashboard**: Interactive dashboard with key performance indicators
 - **Asset Allocation**: Visual representation of portfolio distribution with charts
 - **Performance Tracking**: Historical performance analysis with interactive charts
@@ -26,12 +29,14 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 - **Detailed Reporting**: Comprehensive portfolio insights and analytics
 
 ### 👨‍💼 Admin Capabilities
+
 - **Product Management**: Complete CRUD operations for investment products
 - **AI Content Generation**: Automated product description creation using AI
 - **Admin Interface**: Dedicated admin panel accessible only to authorized users
 - **Product Analytics**: Advanced product performance and user engagement metrics
 
 ### 🤖 AI-Powered Features
+
 - **Intelligent Chatbot "Finley"**: Context-aware AI assistant for investment queries
 - **Portfolio Insights**: Personalized AI-generated investment recommendations
 - **Product Analysis**: AI-driven pros and cons analysis for each investment product
@@ -40,6 +45,7 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 - **Smart Recommendations**: Personalized investment suggestions based on user profile
 
 ### 🔧 Technical Features
+
 - **Containerized Architecture**: Full Docker and Docker Compose setup
 - **Transaction Logging**: Comprehensive API request logging and monitoring
 - **Error Handling**: Robust error management with detailed logging
@@ -49,18 +55,18 @@ A comprehensive full-stack investment platform built for the Grip Invest Winter 
 
 ## 🛠️ Technology Stack
 
-| Category | Technologies |
-|----------|-------------|
-| **Backend** | Node.js, Express.js, TypeScript, Prisma ORM |
-| **Frontend** | Next.js, React, TypeScript, Tailwind CSS |
-| **Database** | MySQL 8.0 |
-| **AI Services** | Google Gemini API (1.5-flash-latest, 1.5-pro-latest) |
-| **UI Components** | Radix UI, Headless UI, Framer Motion |
-| **Charts & Visualization** | Recharts |
-| **DevOps** | Docker, Docker Compose |
-| **Package Management** | pnpm (monorepo) |
-| **Authentication** | JWT, bcrypt.js |
-| **Validation** | Zod |
+| Category                   | Technologies                                         |
+| -------------------------- | ---------------------------------------------------- |
+| **Backend**                | Node.js, Express.js, TypeScript, Prisma ORM          |
+| **Frontend**               | Next.js, React, TypeScript, Tailwind CSS             |
+| **Database**               | MySQL 8.0                                            |
+| **AI Services**            | Google Gemini API (1.5-flash-latest, 1.5-pro-latest) |
+| **UI Components**          | Radix UI, Headless UI, Framer Motion                 |
+| **Charts & Visualization** | Recharts                                             |
+| **DevOps**                 | Docker, Docker Compose                               |
+| **Package Management**     | pnpm (monorepo)                                      |
+| **Authentication**         | JWT, bcrypt.js                                       |
+| **Validation**             | Zod                                                  |
 
 ## 📁 Project Structure
 
@@ -116,11 +122,13 @@ gripinvest_winter_internship_backend/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** (v18+)
 - **pnpm** (`npm install -g pnpm`)
 - **Docker Desktop**
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <your-repository-url>
 cd gripinvest_winter_internship_backend
@@ -151,16 +159,19 @@ JWT_SECRET="your-super-secret-key-that-is-long-and-secure"
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 4. Launch the Application
+
 ```bash
 docker-compose up --build
 ```
 
 ### 5. Database Setup
+
 ```bash
 # Apply database schema
 docker-compose exec backend npx prisma migrate deploy
@@ -170,49 +181,51 @@ docker-compose exec backend npx prisma db seed
 ```
 
 ### 6. Access the Application
+
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001
 - **Health Check**: http://localhost:3001/health
 
 ## 📝 API Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+| Method             | Endpoint                       | Description                     | Auth Required |
+| ------------------ | ------------------------------ | ------------------------------- | ------------- |
 | **Authentication** |
-| POST | `/api/auth/signup` | Register a new user | No |
-| POST | `/api/auth/login` | User authentication | No |
-| POST | `/api/auth/forgot-password` | Request password reset | No |
-| POST | `/api/auth/reset-password` | Reset user password | No |
-| POST | `/api/auth/change-password` | Change password (authenticated) | Yes |
-| **Products** |
-| GET | `/api/products` | Get all investment products | Yes |
-| POST | `/api/products` | Create new product (admin) | Yes |
-| PUT | `/api/products/:id` | Update product (admin) | Yes |
-| DELETE | `/api/products/:id` | Delete product (admin) | Yes |
-| GET | `/api/products/:id` | Get product details | Yes |
-| **Investments** |
-| POST | `/api/investments` | Create new investment | Yes |
-| GET | `/api/investments/:id` | Get investment details | Yes |
-| POST | `/api/investments/:id/cancel` | Cancel recent investment | Yes |
-| **Portfolio** |
-| GET | `/api/portfolio/details` | Get complete portfolio data | Yes |
-| GET | `/api/dashboard` | Get dashboard analytics | Yes |
-| **Profile** |
-| GET | `/api/profile` | Get user profile | Yes |
-| PUT | `/api/profile` | Update user profile | Yes |
-| **Transactions** |
-| GET | `/api/transactions` | Get transaction history | Yes |
-| **AI Services** |
-| POST | `/api/ai/chat` | Chat with AI assistant | Yes |
-| POST | `/api/ai/generate-description` | Generate product description | Yes |
-| POST | `/api/ai/portfolio-insights` | Get AI portfolio analysis | Yes |
-| POST | `/api/ai/product-analysis` | Get AI product analysis | Yes |
+| POST               | `/api/auth/signup`             | Register a new user             | No            |
+| POST               | `/api/auth/login`              | User authentication             | No            |
+| POST               | `/api/auth/forgot-password`    | Request password reset          | No            |
+| POST               | `/api/auth/reset-password`     | Reset user password             | No            |
+| POST               | `/api/auth/change-password`    | Change password (authenticated) | Yes           |
+| **Products**       |
+| GET                | `/api/products`                | Get all investment products     | Yes           |
+| POST               | `/api/products`                | Create new product (admin)      | Yes           |
+| PUT                | `/api/products/:id`            | Update product (admin)          | Yes           |
+| DELETE             | `/api/products/:id`            | Delete product (admin)          | Yes           |
+| GET                | `/api/products/:id`            | Get product details             | Yes           |
+| **Investments**    |
+| POST               | `/api/investments`             | Create new investment           | Yes           |
+| GET                | `/api/investments/:id`         | Get investment details          | Yes           |
+| POST               | `/api/investments/:id/cancel`  | Cancel recent investment        | Yes           |
+| **Portfolio**      |
+| GET                | `/api/portfolio/details`       | Get complete portfolio data     | Yes           |
+| GET                | `/api/dashboard`               | Get dashboard analytics         | Yes           |
+| **Profile**        |
+| GET                | `/api/profile`                 | Get user profile                | Yes           |
+| PUT                | `/api/profile`                 | Update user profile             | Yes           |
+| **Transactions**   |
+| GET                | `/api/transactions`            | Get transaction history         | Yes           |
+| **AI Services**    |
+| POST               | `/api/ai/chat`                 | Chat with AI assistant          | Yes           |
+| POST               | `/api/ai/generate-description` | Generate product description    | Yes           |
+| POST               | `/api/ai/portfolio-insights`   | Get AI portfolio analysis       | Yes           |
+| POST               | `/api/ai/product-analysis`     | Get AI product analysis         | Yes           |
 
 ## 🤖 AI Integration Details
 
 This platform leverages Google Gemini API with a sophisticated implementation:
 
 ### Resilient AI Architecture
+
 - **Primary Model**: gemini-1.5-flash-latest (fast, cost-effective)
 - **Fallback Model**: gemini-1.5-pro-latest (high-capacity backup)
 - **Auto-failover**: Seamless switching on API overload (503 errors)
@@ -221,26 +234,31 @@ This platform leverages Google Gemini API with a sophisticated implementation:
 ### AI Features Implementation
 
 #### 🎯 Context-Aware Chatbot "Finley"
+
 - Receives user's current page context for relevant responses
 - Integrates real-time portfolio data into conversations
 - Provides personalized investment advice and explanations
 
 #### 📈 AI Portfolio Insights
+
 - Analyzes user's investment distribution
 - Generates actionable recommendations
 - Provides risk assessment and diversification suggestions
 
 #### 🔍 AI Product Analysis
+
 - Automated pros and cons generation for investment products
 - Risk level analysis and comparison
 - Performance prediction insights
 
 #### ✍️ AI Content Generation
+
 - Automated product description creation for admins
 - SEO-optimized content generation
 - Consistent tone and style across all descriptions
 
 #### 📊 AI Log Summaries
+
 - Intelligent analysis of transaction logs
 - Error pattern recognition
 - Automated reporting of system issues
@@ -248,18 +266,21 @@ This platform leverages Google Gemini API with a sophisticated implementation:
 ## 🏗️ Architecture Highlights
 
 ### Backend Architecture
+
 - **Modular Structure**: Clean separation of controllers, services, and routes
 - **Middleware Pipeline**: Authentication, logging, and validation layers
 - **Service Layer**: Abstracted business logic for reusability
 - **Prisma ORM**: Type-safe database operations with migrations
 
 ### Frontend Architecture
+
 - **App Router**: Next.js 14 app directory structure
 - **Component Library**: Reusable, accessible components
 - **Context Management**: Centralized authentication state
 - **Type Safety**: Full TypeScript coverage with custom type definitions
 
 ### DevOps & Deployment
+
 - **Multi-stage Dockerfiles**: Optimized production builds
 - **Docker Compose**: Orchestrated multi-container setup
 - **Environment Management**: Secure configuration handling
@@ -278,6 +299,7 @@ This platform leverages Google Gemini API with a sophisticated implementation:
 ## 🎨 User Experience
 
 ### Design System
+
 - **Modern UI**: Clean, professional interface design
 - **Responsive Layout**: Mobile-first, cross-device compatibility
 - **Smooth Animations**: Framer Motion for enhanced user experience
@@ -285,6 +307,7 @@ This platform leverages Google Gemini API with a sophisticated implementation:
 - **Toast Notifications**: User-friendly feedback system
 
 ### Accessibility
+
 - **Keyboard Navigation**: Full keyboard accessibility support
 - **Screen Reader Support**: Semantic HTML and ARIA labels
 - **Color Contrast**: WCAG compliant color schemes
@@ -317,6 +340,7 @@ This platform leverages Google Gemini API with a sophisticated implementation:
 ## 🔧 Development Workflow
 
 ### Local Development
+
 ```bash
 # Start development environment with hot-reloading
 docker-compose up --build
@@ -329,6 +353,7 @@ docker-compose exec backend npx prisma studio
 ```
 
 ### Production Deployment
+
 ```bash
 # Build optimized production images
 docker-compose -f docker-compose.yml up --build

@@ -20,7 +20,11 @@ interface InvestmentModalProps {
   onSuccess: () => void;
 }
 
-export default function InvestmentModal({ product, onClose, onSuccess }: InvestmentModalProps) {
+export default function InvestmentModal({
+  product,
+  onClose,
+  onSuccess,
+}: InvestmentModalProps) {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +37,9 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
 
     const investmentAmount = parseFloat(amount);
     if (isNaN(investmentAmount) || investmentAmount < product.minInvestment) {
-      setError(`Amount must be at least ${formatCurrency(product.minInvestment)}`);
+      setError(
+        `Amount must be at least ${formatCurrency(product.minInvestment)}`,
+      );
       setLoading(false);
       return;
     }
@@ -45,9 +51,11 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
       });
       onSuccess();
     } catch (error: unknown) {
-      console.error('Investment error:', error);
+      console.error("Investment error:", error);
       if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "An unexpected error occurred.");
+        setError(
+          error.response?.data?.message || "An unexpected error occurred.",
+        );
       } else {
         setError("An unexpected error occurred.");
       }
@@ -62,12 +70,25 @@ export default function InvestmentModal({ product, onClose, onSuccess }: Investm
       <div className="bg-slate-900 border border-slate-800 p-8 rounded-xl shadow-xl w-full max-w-md text-white">
         <h2 className="text-2xl font-bold mb-2">Invest in {product.name}</h2>
         <div className="flex items-center gap-6 mb-6 text-gray-300">
-            <p>Yield: <span className="font-semibold text-green-400">{product.annualYield}%</span></p>
-            <p>Min: <span className="font-semibold text-white">{formatCurrency(Number(product.minInvestment))}</span></p>
+          <p>
+            Yield:{" "}
+            <span className="font-semibold text-green-400">
+              {product.annualYield}%
+            </span>
+          </p>
+          <p>
+            Min:{" "}
+            <span className="font-semibold text-white">
+              {formatCurrency(Number(product.minInvestment))}
+            </span>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-400">
+          <label
+            htmlFor="amount"
+            className="block text-sm font-medium text-gray-400"
+          >
             Investment Amount (INR)
           </label>
           <input

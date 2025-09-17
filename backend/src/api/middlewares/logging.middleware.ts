@@ -1,10 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from './auth.middleware';
+import { Request, Response, NextFunction } from "express";
+import { PrismaClient } from "@prisma/client";
+import { AuthRequest } from "./auth.middleware";
 
 const prisma = new PrismaClient();
 
-export const loggingMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const loggingMiddleware = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const originalSend = res.send;
   let responseBody: any = null;
 
@@ -13,7 +17,7 @@ export const loggingMiddleware = (req: AuthRequest, res: Response, next: NextFun
     return originalSend.apply(res, arguments as any);
   };
 
-  res.on('finish', async () => {
+  res.on("finish", async () => {
     // This now directly uses the user object if it exists
     const { method, originalUrl, user } = req;
     const statusCode = res.statusCode;
@@ -33,7 +37,7 @@ export const loggingMiddleware = (req: AuthRequest, res: Response, next: NextFun
         // --- THIS IS THE FIX ---
         // We log the user's ID directly, which is more reliable and efficient.
         // The email is not necessary for a transaction log.
-        userId: user?.id || null, 
+        userId: user?.id || null,
         email: null, // We can remove the email lookup entirely
 
         endpoint: originalUrl,

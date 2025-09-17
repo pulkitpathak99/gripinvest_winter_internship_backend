@@ -1,8 +1,8 @@
 // backend/src/api/schemas/product.schema.ts
-import { z } from 'zod';
+import { z } from "zod";
 
-export const InvestmentTypeEnum = z.enum(['bond', 'etf', 'fd']);
-export const RiskAppetiteEnum = z.enum(['low', 'medium', 'high']);
+export const InvestmentTypeEnum = z.enum(["bond", "etf", "fd"]);
+export const RiskAppetiteEnum = z.enum(["low", "medium", "high"]);
 
 export const ProductSchema = z.object({
   name: z.string().min(3),

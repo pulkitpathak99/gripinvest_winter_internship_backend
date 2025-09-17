@@ -1,8 +1,8 @@
 // frontend/components/ProductFilters.tsx
 
-import { Sparkles, X } from 'lucide-react';
-import clsx from 'clsx';
-import * as Slider from '@radix-ui/react-slider';
+import { Sparkles, X } from "lucide-react";
+import clsx from "clsx";
+import * as Slider from "@radix-ui/react-slider";
 
 // The props interface remains the same
 interface ProductFiltersProps {
@@ -11,49 +11,47 @@ interface ProductFiltersProps {
     risk: string;
     yieldRange: number[];
   };
-  onFilterChange: (key: 'type' | 'risk', value: string) => void;
+  onFilterChange: (key: "type" | "risk", value: string) => void;
   onYieldChange: (value: number[]) => void;
   onAiRecommend: () => void;
   onResetFilters: () => void;
   maxYield: number;
 }
 
-const productTypes = ['All', 'Bond', 'ETF', 'FD'];
-// Use consistent capitalization for display
-const riskLevels = ['All', 'Low', 'Moderate', 'High'];
+const productTypes = ["All", "Bond", "FD", "MF", "ETF", "Other"];
+const riskLevels = ["All", "Low", "Moderate", "High"];
 
-export default function ProductFilters({ 
-  filters, 
-  onFilterChange, 
-  onYieldChange, 
+export default function ProductFilters({
+  filters,
+  onFilterChange,
+  onYieldChange,
   onAiRecommend,
   onResetFilters,
-  maxYield 
+  maxYield,
 }: ProductFiltersProps) {
-  const isFilterActive = 
-    filters.type !== 'All' || 
-    filters.risk.toLowerCase() !== 'all' || 
-    filters.yieldRange[0] !== 0 || 
+  const isFilterActive =
+    filters.type !== "All" ||
+    filters.risk.toLowerCase() !== "all" ||
+    filters.yieldRange[0] !== 0 ||
     filters.yieldRange[1] !== maxYield;
 
   return (
-    // NEW: A clean, self-contained card layout
     <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-6 mb-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
-        
-        {/* Group 1: Investment Type */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-medium text-gray-400">Investment Type</label>
+          <label className="text-sm font-medium text-gray-400">
+            Investment Type
+          </label>
           <div className="flex flex-wrap gap-2">
             {productTypes.map((type) => (
               <button
                 key={type}
-                onClick={() => onFilterChange('type', type)}
+                onClick={() => onFilterChange("type", type)}
                 className={clsx(
                   "px-3 py-1.5 text-sm rounded-md transition-colors font-medium",
-                  filters.type === type 
-                    ? "bg-blue-600 text-white" 
-                    : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
+                  filters.type === type
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700/50 text-gray-300 hover:bg-gray-700",
                 )}
               >
                 {type}
@@ -61,20 +59,22 @@ export default function ProductFilters({
             ))}
           </div>
         </div>
-        
+
         {/* Group 2: Risk Level */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-medium text-gray-400">Risk Level</label>
+          <label className="text-sm font-medium text-gray-400">
+            Risk Level
+          </label>
           <div className="flex flex-wrap gap-2">
             {riskLevels.map((risk) => (
               <button
                 key={risk}
-                onClick={() => onFilterChange('risk', risk.toLowerCase())}
+                onClick={() => onFilterChange("risk", risk.toLowerCase())}
                 className={clsx(
                   "px-3 py-1.5 text-sm rounded-md transition-colors font-medium",
-                  filters.risk === risk.toLowerCase() 
-                    ? "bg-blue-600 text-white" 
-                    : "bg-gray-700/50 text-gray-300 hover:bg-gray-700"
+                  filters.risk === risk.toLowerCase()
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700/50 text-gray-300 hover:bg-gray-700",
                 )}
               >
                 {risk}
@@ -86,8 +86,12 @@ export default function ProductFilters({
         {/* Group 3: Annual Yield Slider */}
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-400">Annual Yield</label>
-            <span className="text-sm font-semibold text-white">{filters.yieldRange[0]}% - {filters.yieldRange[1]}%</span>
+            <label className="text-sm font-medium text-gray-400">
+              Annual Yield
+            </label>
+            <span className="text-sm font-semibold text-white">
+              {filters.yieldRange[0]}% - {filters.yieldRange[1]}%
+            </span>
           </div>
           <Slider.Root
             className="relative flex items-center select-none touch-none w-full h-5"
@@ -104,11 +108,11 @@ export default function ProductFilters({
             <Slider.Thumb className="block w-4 h-4 bg-white rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer" />
           </Slider.Root>
         </div>
-        
+
         {/* Group 4: Action Buttons */}
         <div className="flex items-center justify-end gap-2">
           {isFilterActive && (
-            <button 
+            <button
               onClick={onResetFilters}
               className="flex items-center justify-center gap-2 px-4 py-2 text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
             >
@@ -116,7 +120,7 @@ export default function ProductFilters({
               <span className="font-medium text-sm">Reset</span>
             </button>
           )}
-          <button 
+          <button
             onClick={onAiRecommend}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
           >
@@ -124,7 +128,6 @@ export default function ProductFilters({
             <span>AI Recommend</span>
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -4,7 +4,11 @@ import { useEffect, useRef } from "react";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
-export default function LottieKeepLast({ animationData }: { animationData: any }) {
+export default function LottieKeepLast({
+  animationData,
+}: {
+  animationData: any;
+}) {
   const lottieRef = useRef<any>(null);
 
   useEffect(() => {
@@ -19,7 +23,9 @@ export default function LottieKeepLast({ animationData }: { animationData: any }
         } else {
           ref.pause?.();
         }
-      } catch (e) { /* silent fail */ }
+      } catch (e) {
+        /* silent fail */
+      }
     };
 
     ref?.addEventListener?.("complete", onComplete);
@@ -30,6 +36,12 @@ export default function LottieKeepLast({ animationData }: { animationData: any }
 
   return (
     // @ts-ignore: lottieRef typing differences can be tricky
-    <Lottie animationData={animationData} lottieRef={lottieRef} loop={false} autoplay className="mx-auto" />
+    <Lottie
+      animationData={animationData}
+      lottieRef={lottieRef}
+      loop={false}
+      autoplay
+      className="mx-auto"
+    />
   );
 }

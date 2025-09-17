@@ -1,5 +1,5 @@
 // frontend/components/portfolio/KpiCard.tsx
-import { Icon as LucideIcon } from 'lucide-react';
+import { Icon as LucideIcon } from "lucide-react";
 
 interface KpiCardProps {
   title: string;
@@ -9,7 +9,13 @@ interface KpiCardProps {
   changeColor?: string;
 }
 
-export default function KpiCard({ title, value, icon: Icon, change, changeColor }: KpiCardProps) {
+export default function KpiCard({
+  title,
+  value,
+  icon: Icon,
+  change,
+  changeColor,
+}: KpiCardProps) {
   return (
     <div className="bg-slate-800/50 border border-slate-800 rounded-xl p-5">
       <div className="flex items-center gap-4">

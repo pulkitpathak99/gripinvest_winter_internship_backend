@@ -1,13 +1,19 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface User {
   id: string;
   email: string;
   firstName: string;
-  riskAppetite: 'low' | 'moderate' | 'high';
-  role: 'USER' | 'ADMIN';
+  riskAppetite: "low" | "moderate" | "high";
+  role: "USER" | "ADMIN";
 }
 
 interface AuthContextType {
@@ -26,19 +32,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
     // Add a check to make sure storedUser is not null or the string "undefined"
-    if (storedToken && storedUser && storedUser !== 'undefined') {
+    if (storedToken && storedUser && storedUser !== "undefined") {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to parse user from localStorage:", error);
         // If parsing fails, clear the corrupted data
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       }
     }
     setIsLoading(false);
@@ -46,18 +52,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // --- THIS IS THE NEW LOGIN FUNCTION ---
   const login = (userData: User, token: string) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(userData));
     setToken(token);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
     setToken(null);
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
@@ -70,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

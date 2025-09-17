@@ -10,5 +10,8 @@
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.11.0",
     "framer-motion": "^12.23.12"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
   }
 }

@@ -1,19 +1,23 @@
 // frontend/components/auth/AdminGuard.tsx
 "use client";
 import { toast } from "react-toastify";
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function AdminGuard({ children }: { children: React.ReactNode }) {
+export default function AdminGuard({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && user?.role !== 'ADMIN') {
+    if (!isLoading && user?.role !== "ADMIN") {
       // If user is loaded and is not an admin, redirect them
       toast.error("Access Denied: Admin privileges required.");
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [user, isLoading, router]);
 
@@ -21,9 +25,9 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   if (isLoading || !user) {
     return <div className="text-center">Verifying access...</div>;
   }
-  
-  if (user.role === 'ADMIN') {
-      return <>{children}</>;
+
+  if (user.role === "ADMIN") {
+    return <>{children}</>;
   }
 
   // Fallback in case redirection fails
